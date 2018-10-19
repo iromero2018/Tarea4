@@ -1,10 +1,12 @@
-<head>
+<!DOCTYPE html>
+<html>
+  <head>
     <meta charset="utf-8">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Catamaran" rel="stylesheet">
-     <link href="style.css" rel="stylesheet" type="text/css">
-    <style>
+  
+ <style>
         body {
             font-family: 'Catamaran', sans-serif;
             margin: 20px;
@@ -32,7 +34,7 @@
             stroke: none;
             fill: none;
         }
-        .toolTip {
+         .toolTip {
           position: absolute;
           display: none;
           min-width: 80px;
@@ -43,17 +45,42 @@
           text-align: center;
         }
     </style>
-</head>
+ </head>
+ <body>
 
-<body>
+ <div class='container'>
+    <div class="page-header" align="center">
+      <h1>UNIDAD ADMINISTRATIVA ESPECIAL DE GESTIÓN DE RESTITUCIÓN DE TIERRAS DESPOJADAS</h1>
+      <img src="http://cifras.unidadvictimas.gov.co/imagenes/Tierras.JPG" />
+    </div>
 
-    <h1>UNIDAD ADMINISTRATIVA ESPECIAL DE GESTIÓN DE RESTITUCIÓN DE TIERRAS DESPOJADAS</h1>
-    <h2>Solicitudes de restitución según mes de presentación</h2>
-    <p>Número de solicitudes de inscripción al SRTDAF recibidas en la Unidad de Restitución de Tierras según el mes de presentación de la solicitud</p>
-    <p>Fuente Datos abiertos: https://www.datos.gov.co/resource/qsrc-b3k4.json</p>
+      <div class="col-md-9">
+        <h1 ALIGN=center><b>Solicitudes de restitución según mes de presentación</b></h1>
+        <p>El  Acuerdo  Final  para  la  Terminación  del  Conflicto  y  la  Construcción  de  una  Paz  Estable  y  
+          Duradera   busca,  en  últimas,  evitar  que  en  el  futuro  vuelvan  a  producirse  violaciones  de  
+          derechos humanos y actos de violencia motivados por factores políticos. La reconciliación es un 
+          elemento fundamental de la construcción de paz, y nada debe convocar más la voluntad de los 
+          colombianos que el encuentro con el otro para alcanzar un bienestar general. </p>
+        <p>La reparación integral a las víctimas del conflicto armado es un fin superior que le corresponde 
+          al Estado colombiano.  El Sistema Nacional de Atención y Reparación Integral a las Víctimas está trabajando, y seguirá 
+          haciéndolo, con el objetivo de que en 2021 las víctimas hayan sido reparadas integralmente, 
+          ejerzan su ciudadanía y aporten en la consolidación de una paz estable y duradera. </p>
+        <p>Origen de Datos: <a href="https://www.datos.gov.co/resource/qsrc-b3k4.json">Datos Abiertos Colombia</a></p>
+      </div>
+      <div class="col-md-3">
+        <p>GUÍA DE USO</p>
+        <ul title="Guía">
+          <li type="square">Esta visualización nos permite observar el comportamiento de las solicitudes de restitución de tierras desde el 2011 hasta 2017.  Cada anillo representa un año y cada celda representa un mes específico de un año.  Adicionalmente, al seleccionar una celda se resaltan los valores del mismo mes durante todos los años.</li>
+          <li type="square">El modimso cuenta con una funcionalidad de tooltip que permite conocer la cantidad de solicitudes de la celda.</li>
+          <li type="square">Los colores de las celdas dependen de la cantidad de solicitudes de restitución. La luminocidad se presenta a continuación:</li>
+        </ul>
+      </div>
+      
+  </div>
+ <div id="legend" align="center"></div>
 
-    <div id="chart" width="600px"></div>
-    <div id="legend"></div>
+ <div id="chart" width="600px" align="center"></div>
+    
 
     <script>
         const radians = 0.0174532925;
@@ -62,7 +89,7 @@
         const chartRadius = 250;
         const chartWidth = chartRadius * 2;
         const chartHeight = chartRadius * 2;
-      	const labelRadius = chartRadius + 5;
+        const labelRadius = chartRadius + 5;
         const margin = { "top": 40, "bottom": 40, "left": 40, "right": 40 };
         const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
@@ -76,7 +103,6 @@
 
         //SCALES
         var colour = d3.scaleSequential(d3.interpolateViridis);
-        var dom_element_to_append_to = '#chart';
         var tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
         //CREATE SVG AND A G PLACED IN THE CENTRE OF THE SVG
@@ -92,8 +118,7 @@
             + (margin.top + chartRadius) + ")");
 
         //LOAD THE DATA
-       // d3.csv("https://raw.githubusercontent.com/63anp3ca/HomeWork2/master/data.csv", convertTextToNumbers, function (error, data) {
-        d3.csv("data.csv", convertTextToNumbers, function (error, data) {
+        d3.csv("https://raw.githubusercontent.com/iromero2018/Tarea4/master/data.csv", convertTextToNumbers, function (error, data) {
             if (error) { throw error; };
 
             //ENSURE THE DATA IS SORTED CORRECTLY, IN THIS CASE BY YEAR AND MONTH
@@ -147,8 +172,6 @@
             //ASSUMING DATA IS SORTED, CALCULATE EACH DATA POINT'S SEGMENT VERTICES AND CONTROL POINTS
             data.forEach(function (d, i) { calculateArc(d, i); });
 
-      
-
             var arcs = g.selectAll(".arc")
                 .data(data)
                 .enter()
@@ -169,7 +192,6 @@
                 .style("fill", "white")
                 .style("stroke", "white")
             */
-         
 
             //CURVED EDGES
             arcs.append("path")
@@ -188,23 +210,24 @@
                 })
                 .style("fill", function (d) { return colour(d.value); })
                 .on("mouseover", function (d) {
-
-                  //HIGHLIGHT ARCS FROM THE SAME MONTH, OR WITHIN A 6 MONTH PERIOD EITHER SIDE
+                    //HIGHLIGHT ARCS FROM THE SAME MONTH, OR WITHIN A 6 MONTH PERIOD EITHER SIDE
                     let thisMonth = d.month;
                     let resultYear = 0;
                     if (d.index >= 12){
                     resultYear = parseInt((d.index / 12));
-                	}
+                  }
                     //let lowerLimit = d.index - 6;
                     let lowerLimit = resultYear * 12;
                     //if (lowerLimit >= 1) {
-                    	lowerLimit--;
+                      lowerLimit--;
                     //}
-		    //let lowerLimit = d.index - 6;
-		    		let upperLimit = lowerLimit + 13;
+        //let lowerLimit = d.index - 6;
+            let upperLimit = lowerLimit + 13;
                     //let upperLimit = d.index + 6;
-		    //let upperLimit = d.index + 6;
-                   arcs.selectAll(".arc-segment")
+
+        //let upperLimit = d.index + 6;
+          
+                    arcs.selectAll(".arc-segment")
                         .style("opacity", function (a) {
                             if (a.month == thisMonth) { 
                                 return 1;
@@ -214,23 +237,19 @@
                                 return 0.1
                             };
                         });
-            	})
-               
-                .on("mouseenter", function(d){
-                    tooltip
+                 //tooltip
+                 //     .style("left", d3.event.pageX - 75 + "px")
+                 //     .style("top", d3.event.pageY - 50 + "px")
+                 //     .style("display", "inline-block")
+                 //     .html("Cantidad: " +(d.value)  );
+                 tooltip
                       .style("left", d3.event.pageX - 75 + "px")
                       .style("top", d3.event.pageY - 50 + "px")
                       .style("display", "inline-block")
-                      .html("Cantidad: " +(d.value)  );
-                 })
-                // .on("mouseexit", function(d){
-                //     tooltip
-                //     .style("display","none")
-                //     .style('opacity',1);
-                // })
-
-                 .on("mouseout", function (d) {
-                    arcs.selectAll(".arc-segment")
+                      .html("Cantidad: " +(d.value));
+              })
+                .on("mouseout", function (d) {
+                 arcs.selectAll(".arc-segment")
                         .style("opacity", 2);
                          tooltip
                     .style("display","none")
@@ -401,4 +420,11 @@
             return d;
         };
     </script>
-</body>
+
+    <footer align="center" style="font-size: 12px;">
+            Iván Rodrigo Romero Flórez<br>
+            ir.romero@uniandes.edu.co<br>
+            Universidad de los Andes
+    </footer>
+  </body>
+</html>
