@@ -1,4 +1,4 @@
-﻿<head>
+<head>
     <meta charset="utf-8">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
@@ -92,7 +92,8 @@
             + (margin.top + chartRadius) + ")");
 
         //LOAD THE DATA
-        d3.csv("https://raw.githubusercontent.com/iromero2018/Tarea4/master/data.csv", convertTextToNumbers, function (error, data) {
+       // d3.csv("https://raw.githubusercontent.com/63anp3ca/HomeWork2/master/data.csv", convertTextToNumbers, function (error, data) {
+        d3.csv("data.csv", convertTextToNumbers, function (error, data) {
             if (error) { throw error; };
 
             //ENSURE THE DATA IS SORTED CORRECTLY, IN THIS CASE BY YEAR AND MONTH
@@ -186,13 +187,9 @@
                     return start + " " + side1 + " " + side2 + " " + side3 + " Z"
                 })
                 .style("fill", function (d) { return colour(d.value); })
-
-
-
                 .on("mouseover", function (d) {
 
                   //HIGHLIGHT ARCS FROM THE SAME MONTH, OR WITHIN A 6 MONTH PERIOD EITHER SIDE
-                  
                     let thisMonth = d.month;
                     let resultYear = 0;
                     if (d.index >= 12){
@@ -203,10 +200,10 @@
                     //if (lowerLimit >= 1) {
                     	lowerLimit--;
                     //}
-		              //let lowerLimit = d.index - 6;
+		    //let lowerLimit = d.index - 6;
 		    		let upperLimit = lowerLimit + 13;
                     //let upperLimit = d.index + 6;
-		           //let upperLimit = d.index + 6;
+		    //let upperLimit = d.index + 6;
                    arcs.selectAll(".arc-segment")
                         .style("opacity", function (a) {
                             if (a.month == thisMonth) { 
@@ -224,25 +221,20 @@
                       .style("left", d3.event.pageX - 75 + "px")
                       .style("top", d3.event.pageY - 50 + "px")
                       .style("display", "inline-block")
-                      .html("Costo: " +(d.value)  );
+                      .html("Cantidad: " +(d.value)  );
                  })
-                .on("mouseexit", function(d){
-                    tooltip
-                        .style("display","none")
-                        .style('opacity',1);
-                    arcs.selectAll(".arc-segment").style("opacity", 1);
-
-
-                })
+                // .on("mouseexit", function(d){
+                //     tooltip
+                //     .style("display","none")
+                //     .style('opacity',1);
+                // })
 
                  .on("mouseout", function (d) {
-                   
-                    tooltip
-                        .style("display","none")
-                        .style('opacity',2);
-                   // arcs.selectAll(".arc-segment").style("opacity", 1);
-
-                  
+                    arcs.selectAll(".arc-segment")
+                        .style("opacity", 2);
+                         tooltip
+                    .style("display","none")
+                    .style('opacity',1);
                 });
 
             //ADD LABELS FOR THE YEAR AT THE START OF EACH COIL (IE THE FIRST MONTH)
